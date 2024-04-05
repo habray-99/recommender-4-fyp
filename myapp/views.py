@@ -33,14 +33,18 @@ def random_exercise_generator(type_filter=None, level_filter=None, n=15):
 
 class RandomExerciseView(View):
     def get(self, request):
-        type_filter = request.GET.get('type', None)
-        level_filter = request.GET.get('level', None)
-        n = int(request.GET.get('n', 15))
+        type_filter = request.POST.get('type', None)
+        level_filter = request.POST.get('level', None)
+        n = int(request.POST.get('numberOfExercises', 15))
 
         random_exercises = random_exercise_generator(type_filter, level_filter, n)
 
         if random_exercises is not None:
-            exercises_list = [{'title': row['Title']} for index, row in random_exercises.iterrows()]
-            return JsonResponse({'exercises': exercises_list})
+            exercises_list = [{'title': row['Title'],
+                               'desc': row['Desc'] if pd.notnull(row['Desc']) else '',
+                               'body_part': row['BodyPart'] if pd.notnull(row['BodyPart']) else '',
+                               'equipment': row['Equipment'] if pd.notnull(row['Equipment']) else ''
+                               } for index, row in random_exercises.iterrows()]
+            return JsonResponse({'exercises': exercises_list}, status=200)
         else:
             return JsonResponse({'error': 'No exercises match the specified filters.'}, status=400)
