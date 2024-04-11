@@ -33,9 +33,9 @@ def random_exercise_generator(type_filter=None, level_filter=None, n=15):
 
 class RandomExerciseView(View):
     def get(self, request):
-        type_filter = request.POST.get('type', None)
-        level_filter = request.POST.get('level', None)
-        n = int(request.POST.get('numberOfExercises', 15))
+        type_filter = request.GET.get('type', None)
+        level_filter = request.GET.get('level', None)
+        n = int(request.GET.get('numberOfExercises', 15))
 
         random_exercises = random_exercise_generator(type_filter, level_filter, n)
 
